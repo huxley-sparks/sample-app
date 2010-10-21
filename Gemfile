@@ -11,6 +11,10 @@ gem 'sqlite3-ruby', '1.2.5', :require => 'sqlite3'
 group :development do
 	gem 'rspec-rails', '2.0.0'
 	gem 'annotate-models', '1.0.4'
+	# create users
+	gem 'faker', '0.3.1'
+	# show only a # of users on a page at a time
+	gem 'will_paginate', '3.0.pre2'
 end
 
 group :test do

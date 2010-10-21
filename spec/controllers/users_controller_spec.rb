@@ -180,7 +180,102 @@ describe UsersController do
 
 		  it "should redirect to the user show page" do
 			  put :update, :id => @user, :user => @attr
+			  response.should redirect_to(user_path(@user))
+		  end
+
+		  it "should have a flash message" do
+			  put :update, :id => @user, :user => @attr
 			  flash[:success].should =~ /updated/
+		  end
+	  end
+  end
+
+  describe "authentication of edit/update pages" do
+
+	  before(:each) do
+		  @user = Factory(:user)
+	  end
+
+	  describe "for non-signed-in users" do
+
+		  it "should deny access to 'edit'" do
+			  get :edit, :id => @user
+			  response.should redirect_to(signin_path)
+		  end
+
+		  it "should deny access to 'update'" do
+			  put :update, :id => @user, :user => {}
+			  response.should redirect_to(signin_path)
+		  end
+	  end
+
+	  describe "for signed-in users" do
+
+		  before(:each) do
+			  wrong_user = Factory(:user, :email => "user@example.net")
+			  test_sign_in(wrong_user)
+		  end
+
+		  it "should require matching user for 'edit'" do
+			  get :edit, :id => @user
+			  response.should redirect_to(root_path)
+		  end
+
+		  it "should require matching users for 'update'" do
+			  put :update, :id => @user, :user => {}
+			  response.should redirect_to(root_path)
+		  end
+	  end
+  end
+
+  describe "GET 'index'" do
+
+	  describe "for non-signed-in users" do
+		  it "should deny access" do
+			  get :index
+			  response.should redirect_to(signin_path)
+			  flash[:notice].should =~ /sign in/i
+		  end
+	  end
+
+	  describe "for signed-in users" do
+
+		  before(:each) do
+			  @user = test_sign_in(Factory(:user))
+			  second = Factory(:user, :email => "another@example.com")
+			  third = Factory(:user, :email => "another@example.net")
+
+			  @users = [@users, second, third]
+			  30.times do
+				  @users << Factory(:user, :email => Factory.next(:email))
+			  end
+		  end
+
+		  it "should be successful" do
+			  get :index
+			  response.should be_success
+		  end
+
+		  it "should have the right title" do
+			  get :index
+			  response.should have_selector("title", :content => "All users")
+		  end
+
+		  it "should have an element for each user" do
+			  get :index
+			  @users[0..2].each do |user|
+				  response.should have_selector("li", :content => user.name)
+			  end
+		  end
+
+		  it "should paginate users" do
+			  get :index
+			  response.should have_selector("div.pagination")
+			  response.should have_selector("span.disabled", :content => "Previous")
+			  response.should have_selector("a", :href => "/users?page=2",
+											:content => "2")
+			  response.should have_selector("a", :href => "/users?page=2",
+												 :content => "Next")
 		  end
 	  end
   end

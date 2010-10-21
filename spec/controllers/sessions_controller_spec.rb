@@ -1,4 +1,6 @@
 require 'spec_helper'
+# for http 'get', you can only test what the page contains
+# for http 'post', verify the form, success/fail, by fill_in labels
 
 describe SessionsController do
 	render_views
