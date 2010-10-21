@@ -2,6 +2,8 @@ SampleApp::Application.routes.draw do
   resources :users
   resources :sessions, :only => [:new, :create, :destroy]
 
+  # each match creates, using signup as an example
+  # signup_path and signup_url
   match '/signup',		:to => 'users#new'
   match '/signin',		:to => 'sessions#new'
   match '/signout',		:to => 'sessions#destroy'
