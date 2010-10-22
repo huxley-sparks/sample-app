@@ -14,6 +14,8 @@
 require 'digest'
 
 class User < ActiveRecord::Base
+	# relation to microposts
+	has_many :microposts, :dependent => :destroy
 	# creating a virtual attribute, which is not found in the database
 	attr_accessor :password
 	# allow outside users to modify
