@@ -14,8 +14,12 @@
 require 'digest'
 
 class User < ActiveRecord::Base
-	# relation to microposts
+	# relation to microposts, relationships
 	has_many :microposts, :dependent => :destroy
+	has_many :relationships, :foreign_key => "follwer_id",
+							 :dependent	  => :destroy
+	# override followeds to following
+	has_many :following, :through => :relationships, :source => :followed
 	# creating a virtual attribute, which is not found in the database
 	attr_accessor :password
 	# allow outside users to modify
