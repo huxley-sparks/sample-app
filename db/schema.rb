@@ -22,14 +22,14 @@ ActiveRecord::Schema.define(:version => 20101025202851) do
   add_index "microposts", ["user_id"], :name => "index_microposts_on_user_id"
 
   create_table "relationships", :force => true do |t|
-    t.integer  "follwer_id"
+    t.integer  "follower_id"
     t.integer  "followed_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "relationships", ["followed_id"], :name => "index_relationships_on_followed_id"
-  add_index "relationships", ["follwer_id"], :name => "index_relationships_on_follwer_id"
+  add_index "relationships", ["follower_id"], :name => "index_relationships_on_follower_id"
 
   create_table "users", :force => true do |t|
     t.string   "name"

@@ -16,10 +16,17 @@ require 'digest'
 class User < ActiveRecord::Base
 	# relation to microposts, relationships
 	has_many :microposts, :dependent => :destroy
-	has_many :relationships, :foreign_key => "follwer_id",
+	has_many :relationships, :foreign_key => "follower_id",
 							 :dependent	  => :destroy
 	# override followeds to following
 	has_many :following, :through => :relationships, :source => :followed
+	# build reverse_relationship by associating with relationship
+	has_many :reverse_relationships, :foreign_key => "followed_id",
+									 :class_name => "Relationship",
+									 :dependent => :destroy
+	has_many :followers, :through => :reverse_relationships, :source => :follower
+
+
 	# creating a virtual attribute, which is not found in the database
 	attr_accessor :password
 	# allow outside users to modify
@@ -57,6 +64,18 @@ class User < ActiveRecord::Base
 		# This is preliminary. See Chapter 12 for the full implementation
 		# ? is replaced with id, prevent sql injection
 		Micropost.where("user_id = ?", id)
+	end
+
+	def following?(followed)
+		relationships.find_by_followed_id(followed)
+	end
+
+	def follow!(followed)
+		relationships.create!(:followed_id => followed.id)
+	end
+
+	def unfollow!(followed)
+		relationships.find_by_followed_id(followed).destroy
 	end
 
 	private
