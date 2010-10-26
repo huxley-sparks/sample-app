@@ -1,0 +1,2 @@
+$("follow_form").update("<%= escape_javascript(render('users/unollow')) %>")
+$("followers").update('<%= "#{@user.followers.count} followers" %> ')

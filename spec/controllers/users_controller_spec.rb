@@ -371,4 +371,5 @@ describe UsersController do
 												 :content => @user.name)
 		  end
 	  end
+  end
 end
