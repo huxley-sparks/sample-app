@@ -25,7 +25,7 @@ describe PagesController do
 
 		  it "should have the right title" do
 			  response.should have_selector("title",
-											:content => "#{base_title} | Home")
+											:content => "#{@base_title} | Home")
 		  end
 	  end
 
